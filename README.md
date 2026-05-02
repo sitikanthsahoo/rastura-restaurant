@@ -22,11 +22,16 @@
 
 ---
 
-## 📸 Preview
+## 📸 Screenshots
 
-| Homepage | Menu Section | Admin Dashboard |
-|:---:|:---:|:---:|
-| ![Homepage](https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=400&h=250) | ![Menu](https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=400&h=250) | ![Admin](https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400&h=250) |
+### 🏠 Homepage — Hero Section
+![Homepage](./docs/screenshots/homepage.png)
+
+### 🍽️ Menu Section — Veg/Non-Veg Filter & Spice Levels
+![Menu](./docs/screenshots/menu.png)
+
+### 📊 Admin Dashboard — Analytics Overview
+![Admin Dashboard](./docs/screenshots/admin.png)
 
 ---
 
