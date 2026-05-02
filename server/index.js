@@ -69,6 +69,35 @@ app.post('/api/admin/setup', async (req, res) => {
   }
 });
 
+// ⚠️ TEMPORARY — Seed all menu items into MongoDB (remove after use)
+app.get('/api/seed-menu', async (req, res) => {
+  try {
+    const indianMenu = [
+      { category: "Starters", name: "Paneer Tikka", desc: "Cottage cheese marinated in spiced yogurt, grilled in tandoor with bell peppers and onions. Served with mint chutney.", price: 349, isVeg: true, image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&q=80&w=800" },
+      { category: "Starters", name: "Seekh Kebab", desc: "Minced lamb seasoned with ginger, garlic, green chillies & fresh herbs, skewered and cooked in a tandoor.", price: 449, isVeg: false, image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&q=80&w=800" },
+      { category: "Starters", name: "Dahi Puri", desc: "Crispy puris filled with spiced mashed potato, topped with sweet yogurt, tamarind chutney & sev.", price: 199, isVeg: true, image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&q=80&w=800" },
+      { category: "Starters", name: "Chicken Malai Tikka", desc: "Tender chicken pieces marinated in cream, cashew paste, cardamom & saffron. Slow cooked in tandoor.", price: 499, isVeg: false, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&q=80&w=800" },
+      { category: "Mains", name: "Butter Chicken", desc: "Tender chicken in a velvety tomato-cream sauce with aromatic spices, finished with kasuri methi and butter.", price: 549, isVeg: false, image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=800" },
+      { category: "Mains", name: "Dal Makhani", desc: "Black lentils slow-cooked overnight with butter, cream and a rich blend of aromatic spices. A Rastura classic.", price: 379, isVeg: true, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=800" },
+      { category: "Mains", name: "Hyderabadi Dum Biryani", desc: "Fragrant basmati rice layered with spiced chicken, caramelized onions & saffron, slow-cooked in a sealed pot.", price: 649, isVeg: false, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&q=80&w=800" },
+      { category: "Mains", name: "Palak Paneer", desc: "Cottage cheese in a silky smooth spinach gravy, tempered with cumin, garlic and a touch of cream.", price: 399, isVeg: true, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=800" },
+      { category: "Mains", name: "Rogan Josh", desc: "Slow-braised Kashmiri lamb shanks in a bold sauce of whole spices, Kashmiri red chillies & fennel.", price: 749, isVeg: false, image: "https://images.unsplash.com/photo-1574653853027-5382a3d23a15?auto=format&fit=crop&q=80&w=800" },
+      { category: "Desserts", name: "Gulab Jamun", desc: "Soft milk-solid dumplings fried golden, soaked in rose-cardamom sugar syrup. Served warm with rabri.", price: 199, isVeg: true, image: "https://images.unsplash.com/photo-1666791898378-a3421736b5e6?auto=format&fit=crop&q=80&w=800" },
+      { category: "Desserts", name: "Rasmalai", desc: "Delicate cottage cheese dumplings soaked in chilled saffron milk, garnished with pistachios & rose petals.", price: 249, isVeg: true, image: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&q=80&w=800" },
+      { category: "Desserts", name: "Kulfi Falooda", desc: "Traditional Indian ice cream with rose syrup, basil seeds, vermicelli noodles and fresh mango puree.", price: 279, isVeg: true, image: "https://images.unsplash.com/photo-1570145820259-b5b80c5c8bd6?auto=format&fit=crop&q=80&w=800" },
+      { category: "Drinks", name: "Mango Lassi", desc: "Thick and creamy Alphonso mango blended with chilled yogurt, a pinch of cardamom & saffron strands.", price: 199, isVeg: true, image: "https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&q=80&w=800" },
+      { category: "Drinks", name: "Masala Chai", desc: "Our signature spiced tea with ginger, cardamom, cinnamon & cloves, brewed with full-fat milk.", price: 99, isVeg: true, image: "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&q=80&w=800" },
+      { category: "Drinks", name: "Rose Sharbat", desc: "Chilled rose-water drink with basil seeds, lemon, a hint of black salt and fresh mint.", price: 149, isVeg: true, image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=800" },
+    ];
+    const count = await MenuItem.countDocuments();
+    if (count > 0) return res.json({ message: `Menu already has ${count} items. No changes made.` });
+    await MenuItem.insertMany(indianMenu);
+    res.json({ message: `✅ Successfully seeded ${indianMenu.length} Indian menu items into MongoDB!` });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Reservation Schema
 const reservationSchema = new mongoose.Schema({
   name: { type: String, required: true },
