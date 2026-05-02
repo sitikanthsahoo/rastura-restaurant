@@ -166,14 +166,14 @@ npm run dev
 ### Menu
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `GET` | `/api/menu` | Get all menu items | ❌ |
+| `GET` | `/api/menu` | Get all menu items | 🔓 Public |
 | `POST` | `/api/menu` | Add a new dish | ✅ JWT |
 | `DELETE` | `/api/menu/:id` | Delete a dish | ✅ JWT |
 
 ### Reservations
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `POST` | `/api/reservations` | Submit a booking | ❌ |
+| `POST` | `/api/reservations` | Submit a booking | 🔓 Public |
 | `GET` | `/api/reservations` | Get all bookings | ✅ JWT |
 | `PATCH` | `/api/reservations/:id` | Update booking status | ✅ JWT |
 | `DELETE` | `/api/reservations/:id` | Delete a booking | ✅ JWT |
@@ -181,7 +181,7 @@ npm run dev
 ### Events
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `GET` | `/api/events` | Get all events | ❌ |
+| `GET` | `/api/events` | Get all events | 🔓 Public |
 | `POST` | `/api/events` | Create an event | ✅ JWT |
 | `DELETE` | `/api/events/:id` | Delete an event | ✅ JWT |
 
