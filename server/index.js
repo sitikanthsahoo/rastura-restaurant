@@ -69,6 +69,21 @@ app.post('/api/admin/setup', async (req, res) => {
   }
 });
 
+// ⚠️ TEMPORARY SEED ROUTE — Remove after first use
+app.get('/api/seed-admin', async (req, res) => {
+  try {
+    const existing = await Admin.findOne({ username: 'admin' });
+    if (existing) return res.json({ message: 'Admin already exists! Login with admin / admin123' });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('admin123', salt);
+    const admin = new Admin({ username: 'admin', password: hashedPassword });
+    await admin.save();
+    res.json({ message: '✅ Admin created! Username: admin | Password: admin123' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Reservation Schema
 const reservationSchema = new mongoose.Schema({
   name: { type: String, required: true },
