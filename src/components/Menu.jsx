@@ -15,7 +15,7 @@ const spiceMap = {
   'Kulfi Falooda': 0, 'Mango Lassi': 0, 'Masala Chai': 1, 'Rose Sharbat': 0,
 };
 
-const Menu = () => {
+const Menu = ({ onAddToCart, cart = [] }) => {
   const [activeTab, setActiveTab] = useState("Starters");
   const [menuItems, setMenuItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -170,11 +170,31 @@ const Menu = () => {
                   {item.desc}
                 </p>
 
-                {/* Add Button */}
+                {/* Add to Cart Button */}
                 <div className="absolute bottom-8 right-8">
-                  <button className="w-14 h-14 bg-surface rounded-full flex items-center justify-center text-[#EF7C5D] shadow-lg hover:scale-110 active:scale-95 transition-all">
-                    <span className="text-3xl font-bold">+</span>
-                  </button>
+                  {(() => {
+                    const cartItem = cart.find(c => (c._id || c.id) === (item._id || item.id));
+                    const qty = cartItem ? cartItem.qty : 0;
+                    return (
+                      <motion.button
+                        whileTap={{ scale: 0.85 }}
+                        onClick={() => onAddToCart && onAddToCart(item)}
+                        className="relative w-14 h-14 bg-surface rounded-full flex items-center justify-center text-[#EF7C5D] shadow-lg hover:scale-110 active:scale-95 transition-all hover:bg-primary hover:text-white"
+                      >
+                        <span className="text-3xl font-bold leading-none">+</span>
+                        {qty > 0 && (
+                          <motion.span
+                            key={qty}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute -top-2 -right-2 w-6 h-6 bg-primary text-white rounded-full text-xs font-bold flex items-center justify-center"
+                          >
+                            {qty}
+                          </motion.span>
+                        )}
+                      </motion.button>
+                    );
+                  })()}
                 </div>
               </motion.div>
             ))}
