@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200&h=400" alt="RASTURA Restaurant Banner" width="100%" style="border-radius: 12px"/>
+
 
 # 🍽️ RASTURA — Where Taste Meets Elegance
 
