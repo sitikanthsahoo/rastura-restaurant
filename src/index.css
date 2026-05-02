@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  scroll-behavior: smooth;
+  /* EXACT MATCH LIGHT COLORS from Reference */
+  --color-bg: #F5E6D3;      /* Cream background */
+  --color-surface: #FFFFFF;
+  --color-text: #1A1A1A;    /* Solid Black for RASTURA */
+  --color-subtext: #1A1A1A; /* Solid Black for subheadline (as per user request) */
+  --color-accent: #F4CDC3;  /* Soft Peach for Navbar */
+  --color-primary: #EF7C5D; /* Coral for buttons/pills */
+  --color-muted: rgba(26, 26, 26, 0.6);
+}
+
+.dark {
+  /* Dark Theme Variables - Calm & High Contrast */
+  --color-bg: #1A1612;      /* Deep Espresso */
+  --color-surface: #241E19; /* Lighter Espresso */
+  --color-text: #F5E6D3;    /* Cream text for dark mode */
+  --color-subtext: #F5E6D3;
+  --color-accent: #2D241E;
+  --color-primary: #EF7C5D;
+  --color-muted: rgba(245, 230, 211, 0.5);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+h1, h2, h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  opacity: 0.3;
+  border-radius: 9999px;
+}
+
+/* Utilities */
+.nav-pill {
+  background-color: var(--color-accent);
+  backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 2rem;
+  transition: all 0.5s ease;
+}
+
+.btn-pill {
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.glass-card {
+  background-color: var(--color-surface);
+  backdrop-filter: blur(4px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
