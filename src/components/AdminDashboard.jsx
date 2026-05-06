@@ -5,7 +5,8 @@ import {
   CheckCircle, XCircle, Trash2, LogOut, 
   ChevronRight, Utensils, LayoutDashboard,
   Loader2, Plus, Image as ImageIcon,
-  Tag, DollarSign, BarChart2, TrendingUp, ClipboardList
+  Tag, DollarSign, BarChart2, TrendingUp, ClipboardList,
+  QrCode, Download
 } from 'lucide-react';
 import { menuCategories } from '../data/menuData';
 
@@ -226,6 +227,12 @@ const AdminDashboard = ({ admin, onLogout }) => {
             active={activeTab === 'events'} 
             onClick={() => setActiveTab('events')} 
           />
+          <SidebarLink 
+            icon={<QrCode size={20} />} 
+            label="QR CODE MENU" 
+            active={activeTab === 'qrcode'} 
+            onClick={() => setActiveTab('qrcode')} 
+          />
         </nav>
 
         <button 
@@ -242,7 +249,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
         <header className="flex justify-between items-end mb-12">
           <div>
             <h1 className="text-6xl font-retro text-textMain uppercase tracking-tighter">
-              {activeTab === 'analytics' ? 'Analytics' : activeTab === 'reservations' ? 'Reservations' : activeTab === 'menu' ? 'Menu Manager' : 'Events Manager'}
+              {activeTab === 'analytics' ? 'Analytics' : activeTab === 'reservations' ? 'Reservations' : activeTab === 'menu' ? 'Menu Manager' : activeTab === 'events' ? 'Events Manager' : 'QR Code Menu'}
             </h1>
             <p className="text-textMain/50 font-bold mt-2 uppercase tracking-widest">Welcome back, {admin.username}</p>
           </div>
@@ -591,6 +598,38 @@ const AdminDashboard = ({ admin, onLogout }) => {
                   </motion.div>
                 ))}
               </div>
+            ) : activeTab === 'qrcode' ? (
+              // QR CODE TAB
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-surface rounded-[40px] p-12 border-4 border-bg shadow-xl flex flex-col items-center text-center max-w-2xl mx-auto"
+              >
+                <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center text-primary mb-8">
+                  <QrCode size={36} />
+                </div>
+                <h2 className="text-4xl font-retro text-textMain uppercase mb-4">Table QR Code</h2>
+                <p className="text-textMain/50 font-medium mb-10 max-w-md">
+                  Print this QR code and place it on your restaurant tables. Customers can scan it with their phone camera to instantly view your live digital menu.
+                </p>
+                
+                <div className="bg-white p-6 rounded-[30px] border-8 border-bg shadow-lg mb-10">
+                  <img 
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://rastura-restaurant.netlify.app/%23menu&color=1a1a1a&bgcolor=ffffff" 
+                    alt="Digital Menu QR Code" 
+                    className="w-[250px] h-[250px] object-contain"
+                  />
+                </div>
+
+                <a 
+                  href="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://rastura-restaurant.netlify.app/%23menu&color=1a1a1a&bgcolor=ffffff" 
+                  download="Rastura_Menu_QRCode.png"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-primary text-white px-8 py-5 rounded-pill font-retro text-xl flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-primary/20 w-full justify-center"
+                >
+                  <Download size={24} /> DOWNLOAD HIGH-RES QR
+                </a>
+              </motion.div>
             )}
           </div>
         )}
