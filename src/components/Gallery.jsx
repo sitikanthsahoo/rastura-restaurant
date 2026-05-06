@@ -16,7 +16,7 @@ const Gallery = () => {
   const [selectedImg, setSelectedImg] = useState(null);
 
   return (
-    <section id="gallery" className="py-24 transition-colors duration-500">
+    <section id="gallery" className="py-24 bg-surface transition-colors duration-500">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <FadeUp>

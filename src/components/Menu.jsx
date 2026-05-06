@@ -53,7 +53,7 @@ const Menu = ({ onAddToCart, cart = [] }) => {
   });
 
   return (
-    <section id="menu" className="py-24 bg-surface transition-colors duration-500">
+    <section id="menu" className="py-24 bg-parchment transition-colors duration-500 shadow-inner">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <FadeUp>
