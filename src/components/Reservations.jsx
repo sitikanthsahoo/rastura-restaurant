@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Loader2, Calendar, Users, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import FadeUp from './FadeUp';
 
 const Reservations = () => {
   const [formState, setFormState] = useState('idle');
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,6 +37,11 @@ const Reservations = () => {
       if (data.success) {
         setFormState('success');
         resetForm();
+        if (localStorage.getItem('userToken')) {
+          setTimeout(() => {
+            navigate('/profile');
+          }, 2000);
+        }
       } else {
         throw new Error(data.message || 'Something went wrong');
       }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowRight, Soup, Sun, Moon, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { name: 'HOME', href: '#home' },
@@ -11,6 +12,7 @@ const navLinks = [
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">
@@ -51,13 +53,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           
-          <a
-            href="/profile"
+          <button
+            onClick={() => navigate('/profile')}
             className="p-2 rounded-full bg-black/5 text-[#1A1A1A] hover:text-[#EF7C5D] transition-all"
             aria-label="Profile"
           >
             <User size={20} />
-          </a>
+          </button>
 
           {/* EXACT MATCH: CTA Button with white ring */}
           <div className="hidden md:block">

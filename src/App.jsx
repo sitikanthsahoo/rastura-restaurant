@@ -24,6 +24,7 @@ function App() {
 
   const [admin, setAdmin] = useState(null);
   const [user, setUser] = useState(null);
+  const [isCheckingUser, setIsCheckingUser] = useState(true);
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -33,7 +34,10 @@ function App() {
       fetch(`${API_URL}/api/users/me`, { headers: { 'x-auth-token': token } })
         .then(res => res.json())
         .then(data => { if (data.user) setUser(data.user); })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => setIsCheckingUser(false));
+    } else {
+      setIsCheckingUser(false);
     }
   }, []);
 
@@ -116,7 +120,11 @@ function App() {
 
           {/* Customer Profile Route */}
           <Route path="/profile" element={
-            user ? (
+            isCheckingUser ? (
+              <div className="min-h-screen bg-bg flex items-center justify-center">
+                <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+              </div>
+            ) : user ? (
               <CustomerDashboard user={user} onLogout={handleUserLogout} />
             ) : (
               <CustomerAuth onLogin={(u) => setUser(u)} />
