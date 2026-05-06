@@ -571,7 +571,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
                   </div>
                 );
               })()
-            ) : (
+            ) : activeTab === 'events' ? (
               // EVENTS MANAGER TAB
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {events.map((event, idx) => (
@@ -630,7 +630,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
                   <Download size={24} /> DOWNLOAD HIGH-RES QR
                 </a>
               </motion.div>
-            )}
+            ) : null}
           </div>
         )}
       </main>
