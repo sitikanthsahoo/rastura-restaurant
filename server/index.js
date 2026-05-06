@@ -59,6 +59,11 @@ const auth = (req, res, next) => {
   }
 };
 
+// Root Route (Health Check)
+app.get('/', (req, res) => {
+  res.send('RASTURA Restaurant API is running perfectly!');
+});
+
 // Customer Register
 app.post('/api/users/register', async (req, res) => {
   const { name, email, password, phone } = req.body;
