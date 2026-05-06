@@ -6,7 +6,7 @@ import {
   ChevronRight, Utensils, LayoutDashboard,
   Loader2, Plus, Image as ImageIcon,
   Tag, DollarSign, BarChart2, TrendingUp, ClipboardList,
-  QrCode, Download
+  QrCode, Download, Edit
 } from 'lucide-react';
 import { menuCategories } from '../data/menuData';
 
@@ -151,6 +151,31 @@ const AdminDashboard = ({ admin, onLogout }) => {
       if (response.ok) fetchMenu();
     } catch (err) {
       console.error('Delete menu item error:', err);
+    }
+  };
+
+  const updateMenuPrice = async (id, currentPrice) => {
+    const newPriceStr = window.prompt(`Enter new price for this dish ($):`, currentPrice);
+    if (newPriceStr === null) return;
+    
+    const newPrice = parseFloat(newPriceStr);
+    if (isNaN(newPrice) || newPrice < 0) {
+      return alert("Please enter a valid positive number.");
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/admin/menu/${id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-auth-token': localStorage.getItem('adminToken')
+        },
+        body: JSON.stringify({ price: newPrice })
+      });
+      if (response.ok) fetchMenu();
+      else alert('Failed to update price');
+    } catch (err) {
+      console.error('Update price error:', err);
     }
   };
 
@@ -371,12 +396,20 @@ const AdminDashboard = ({ admin, onLogout }) => {
                         <span className="text-xs font-black text-primary uppercase tracking-widest">{item.category}</span>
                       </div>
                       <p className="text-textMain/50 text-sm font-medium line-clamp-2 mb-6">{item.desc}</p>
-                      <button 
-                        onClick={() => deleteMenuItem(item._id)}
-                        className="w-full py-4 bg-red-50 text-red-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        <Trash2 size={18} /> DELETE DISH
-                      </button>
+                      <div className="flex gap-4">
+                        <button 
+                          onClick={() => updateMenuPrice(item._id, item.price)}
+                          className="flex-1 py-4 bg-primary/10 text-primary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all"
+                        >
+                          <Edit size={18} /> EDIT PRICE
+                        </button>
+                        <button 
+                          onClick={() => deleteMenuItem(item._id)}
+                          className="flex-1 py-4 bg-red-50 text-red-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          <Trash2 size={18} /> DELETE
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
