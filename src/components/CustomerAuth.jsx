@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Loader2, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CustomerAuth = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -96,13 +97,20 @@ const CustomerAuth = ({ onLogin }) => {
           <div className="relative">
             <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-textMain/30" size={20} />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               required
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full bg-bg rounded-pill pl-14 pr-6 py-4 text-textMain font-bold focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all border-2 border-transparent focus:border-primary"
+              className="w-full bg-bg rounded-pill pl-14 pr-16 py-4 text-textMain font-bold focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all border-2 border-transparent focus:border-primary"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-textMain/30 hover:text-primary transition-colors"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           <button
