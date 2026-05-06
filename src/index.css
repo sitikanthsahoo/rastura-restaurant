@@ -76,6 +76,13 @@ h1, h2, h3 {
   border-radius: 9999px;
 }
 
+/* Ensure background sketch shows through main containers */
+#root > div,
+section.bg-bg,
+.min-h-screen.bg-bg {
+  background-color: transparent !important;
+}
+
 /* Utilities */
 .nav-pill {
   background-color: var(--color-accent);
