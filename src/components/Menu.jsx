@@ -67,26 +67,23 @@ const Menu = ({ onAddToCart, cart = [] }) => {
             <div className="flex justify-center gap-3 mb-8">
               <button
                 onClick={() => setVegFilter('all')}
-                className={`px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${
-                  vegFilter === 'all' ? 'bg-textMain text-surface border-textMain' : 'border-textMain/20 text-textMain/50 hover:border-textMain/50'
-                }`}
+                className={`px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${vegFilter === 'all' ? 'bg-textMain text-surface border-textMain' : 'border-textMain/20 text-textMain/50 hover:border-textMain/50'
+                  }`}
               >
                 ALL
               </button>
               <button
                 onClick={() => setVegFilter('veg')}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${
-                  vegFilter === 'veg' ? 'bg-green-600 text-white border-green-600' : 'border-green-600/40 text-green-600 hover:border-green-600'
-                }`}
+                className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${vegFilter === 'veg' ? 'bg-green-600 text-white border-green-600' : 'border-green-600/40 text-green-600 hover:border-green-600'
+                  }`}
               >
                 <span className="w-3 h-3 rounded-sm border-2 border-green-600 bg-green-600 inline-block flex-shrink-0" />
                 VEG ONLY
               </button>
               <button
                 onClick={() => setVegFilter('nonveg')}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${
-                  vegFilter === 'nonveg' ? 'bg-red-500 text-white border-red-500' : 'border-red-500/40 text-red-500 hover:border-red-500'
-                }`}
+                className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm border-2 transition-all ${vegFilter === 'nonveg' ? 'bg-red-500 text-white border-red-500' : 'border-red-500/40 text-red-500 hover:border-red-500'
+                  }`}
               >
                 <span className="w-3 h-3 rounded-sm border-2 border-red-500 bg-red-500 inline-block flex-shrink-0" />
                 NON-VEG
@@ -100,11 +97,10 @@ const Menu = ({ onAddToCart, cart = [] }) => {
               <button
                 key={category}
                 onClick={() => setActiveTab(category)}
-                className={`relative px-10 py-3 text-sm font-bold transition-all rounded-full ${
-                  activeTab === category
+                className={`relative px-10 py-3 text-sm font-bold transition-all rounded-full ${activeTab === category
                     ? 'bg-[#EF7C5D] text-white shadow-lg scale-105'
                     : 'text-textMain/60 hover:text-[#EF7C5D]'
-                }`}
+                  }`}
               >
                 {category.toUpperCase()}
               </button>

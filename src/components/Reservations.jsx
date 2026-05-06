@@ -20,20 +20,20 @@ const Reservations = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormState('loading');
-    
+
     try {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const response = await fetch(`${API_URL}/api/reservations`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-auth-token': localStorage.getItem('userToken') || ''
         },
         body: JSON.stringify(formData)
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         setFormState('success');
         resetForm();
@@ -75,7 +75,7 @@ const Reservations = () => {
     <section id="reservations" className="py-24 bg-surface transition-colors duration-500 overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           <div className="space-y-8">
             <FadeUp>
               <h2 className="text-7xl md:text-9xl font-retro text-textMain leading-[0.8] uppercase tracking-tighter">
@@ -85,11 +85,11 @@ const Reservations = () => {
             </FadeUp>
             <FadeUp delay={0.2}>
               <p className="text-xl font-medium text-textMain/60 leading-relaxed">
-                Book your table at Rastura and experience a world where vintage charm 
+                Book your table at Rastura and experience a world where vintage charm
                 meets modern excellence. We can't wait to serve you.
               </p>
             </FadeUp>
-            
+
             <FadeUp delay={0.3}>
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-4 bg-bg p-6 rounded-[30px] transition-colors duration-500">
@@ -137,7 +137,7 @@ const Reservations = () => {
                     </select>
                   </div>
                 </div>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
