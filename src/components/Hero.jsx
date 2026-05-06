@@ -86,7 +86,7 @@ const Hero = () => {
         >
           {/* Phone Pill - Exact Style */}
           <div className="bg-[#EF7C5D] text-white rounded-full px-10 py-5 flex items-center gap-4 shadow-2xl">
-            <span className="font-black text-sm md:text-base tracking-widest">+880-1234-567890</span>
+            <span className="font-black text-sm md:text-base tracking-widest">+91-98765-43210</span>
             <div className="bg-white text-[#EF7C5D] p-2 rounded-full shadow-inner">
               <Phone size={24} fill="currentColor" strokeWidth={3} />
             </div>
