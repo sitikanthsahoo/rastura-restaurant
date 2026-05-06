@@ -23,6 +23,28 @@ const adminSchema = new mongoose.Schema({
 
 const Admin = mongoose.model('Admin', adminSchema);
 
+// User Schema
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phone: { type: String }
+});
+const User = mongoose.model('User', userSchema);
+
+// Customer Auth Middleware
+const customerAuth = (req, res, next) => {
+  const token = req.header('x-auth-token');
+  if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (e) {
+    res.status(400).json({ message: 'Token is not valid' });
+  }
+};
+
 // Auth Middleware
 const auth = (req, res, next) => {
   const token = req.header('x-auth-token');
@@ -36,6 +58,49 @@ const auth = (req, res, next) => {
     res.status(400).json({ message: 'Token is not valid' });
   }
 };
+
+// Customer Register
+app.post('/api/users/register', async (req, res) => {
+  const { name, email, password, phone } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = new User({ name, email, password: hashedPassword, phone });
+    await newUser.save();
+    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '7d' });
+    res.status(201).json({ token, user: { id: newUser._id, name, email } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Customer Login
+app.post('/api/users/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'User not found' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get Current User & Their Reservations
+app.get('/api/users/me', customerAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    const userReservations = await Reservation.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    res.json({ user, reservations: userReservations });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // Admin Login
 app.post('/api/admin/login', async (req, res) => {
@@ -71,6 +136,7 @@ app.post('/api/admin/setup', async (req, res) => {
 
 // Reservation Schema
 const reservationSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
@@ -110,10 +176,21 @@ const Event = mongoose.model('Event', eventSchema);
 
 // --- PUBLIC ROUTES ---
 
-// POST: Create Reservation (Public)
+// POST: Create Reservation (Public/Customer)
 app.post('/api/reservations', async (req, res) => {
   try {
-    const newReservation = new Reservation(req.body);
+    const reservationData = { ...req.body };
+    const token = req.header('x-auth-token');
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        reservationData.userId = decoded.id;
+      } catch (err) {
+        console.log("Invalid token during reservation");
+      }
+    }
+
+    const newReservation = new Reservation(reservationData);
     const savedReservation = await newReservation.save();
     res.status(201).json({
       success: true,

@@ -13,6 +13,8 @@ import CustomCursor from './components/CustomCursor';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import Cart from './components/Cart';
+import CustomerAuth from './components/CustomerAuth';
+import CustomerDashboard from './components/CustomerDashboard';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -21,7 +23,19 @@ function App() {
   });
 
   const [admin, setAdmin] = useState(null);
+  const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    if (token) {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      fetch(`${API_URL}/api/users/me`, { headers: { 'x-auth-token': token } })
+        .then(res => res.json())
+        .then(data => { if (data.user) setUser(data.user); })
+        .catch(console.error);
+    }
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -37,6 +51,11 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     setAdmin(null);
+  };
+
+  const handleUserLogout = () => {
+    localStorage.removeItem('userToken');
+    setUser(null);
   };
 
   // Cart handlers
@@ -93,6 +112,15 @@ function App() {
                 onClose={clearCart}
               />
             </>
+          } />
+
+          {/* Customer Profile Route */}
+          <Route path="/profile" element={
+            user ? (
+              <CustomerDashboard user={user} onLogout={handleUserLogout} />
+            ) : (
+              <CustomerAuth onLogin={(u) => setUser(u)} />
+            )
           } />
 
           {/* Admin Routes */}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowRight, Soup, Sun, Moon } from 'lucide-react';
+import { Menu, X, ArrowRight, Soup, Sun, Moon, User } from 'lucide-react';
 
 const navLinks = [
   { name: 'HOME', href: '#home' },
@@ -50,6 +50,14 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           >
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
+          
+          <a
+            href="/profile"
+            className="p-2 rounded-full bg-black/5 text-[#1A1A1A] hover:text-[#EF7C5D] transition-all"
+            aria-label="Profile"
+          >
+            <User size={20} />
+          </a>
 
           {/* EXACT MATCH: CTA Button with white ring */}
           <div className="hidden md:block">
