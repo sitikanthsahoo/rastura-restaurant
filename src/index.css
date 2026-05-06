@@ -85,15 +85,13 @@ section.bg-bg,
 
 /* Utilities */
 .bg-parchment {
-  background-image: url('/parchment.png');
+  background-image: linear-gradient(rgba(245, 230, 211, 0.85), rgba(245, 230, 211, 0.85)), url('/parchment.png');
   background-size: cover;
   background-position: center;
-  background-color: var(--color-bg);
 }
 
 .dark .bg-parchment {
-  background-blend-mode: multiply;
-  filter: brightness(0.7) contrast(1.1);
+  background-image: linear-gradient(rgba(26, 22, 18, 0.9), rgba(26, 22, 18, 0.9)), url('/parchment.png');
 }
 .nav-pill {
   background-color: var(--color-accent);
