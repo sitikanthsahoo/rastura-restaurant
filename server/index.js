@@ -253,6 +253,16 @@ app.post('/api/admin/events', auth, async (req, res) => {
   }
 });
 
+// PATCH: Update Event (Protected)
+app.patch('/api/admin/events/:id', auth, async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedEvent);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // DELETE: Remove Event (Protected)
 app.delete('/api/admin/events/:id', auth, async (req, res) => {
   try {

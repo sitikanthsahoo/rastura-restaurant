@@ -25,6 +25,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
 
   // Event Form State
   const [showEventForm, setShowEventForm] = useState(false);
+  const [editingEventId, setEditingEventId] = useState(null);
   const [eventForm, setEventForm] = useState({
     title: '', date: '', desc: '', image: ''
   });
@@ -182,8 +183,13 @@ const AdminDashboard = ({ admin, onLogout }) => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/api/admin/events`, {
-        method: 'POST',
+      const url = editingEventId 
+        ? `${API_URL}/api/admin/events/${editingEventId}`
+        : `${API_URL}/api/admin/events`;
+      const method = editingEventId ? 'PATCH' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: { 
           'Content-Type': 'application/json',
           'x-auth-token': localStorage.getItem('adminToken')
@@ -193,14 +199,26 @@ const AdminDashboard = ({ admin, onLogout }) => {
       if (response.ok) {
         setShowEventForm(false);
         setEventForm({ title: '', date: '', desc: '', image: '' });
+        setEditingEventId(null);
         fetchEvents();
       } else {
         throw new Error('Server error');
       }
     } catch (err) {
-      console.error('Add event error:', err);
-      alert('Failed to add event. Please check your connection.');
+      console.error('Save event error:', err);
+      alert('Failed to save event. Please check your connection.');
     }
+  };
+
+  const openEditEventForm = (event) => {
+    setEventForm({
+      title: event.title,
+      date: event.date,
+      desc: event.desc,
+      image: event.image
+    });
+    setEditingEventId(event._id);
+    setShowEventForm(true);
   };
 
   const deleteEvent = async (id) => {
@@ -290,7 +308,11 @@ const AdminDashboard = ({ admin, onLogout }) => {
 
           {activeTab === 'events' && (
             <button 
-              onClick={() => setShowEventForm(true)}
+              onClick={() => {
+                setEditingEventId(null);
+                setEventForm({ title: '', date: '', desc: '', image: '' });
+                setShowEventForm(true);
+              }}
               className="bg-primary text-white px-8 py-4 rounded-pill font-retro text-xl flex items-center gap-2 hover:scale-105 transition-all shadow-xl shadow-primary/20"
             >
               <Plus size={20} /> ADD EVENT
@@ -621,12 +643,20 @@ const AdminDashboard = ({ admin, onLogout }) => {
                     <div className="p-8">
                       <h3 className="text-3xl font-retro text-textMain uppercase mb-2">{event.title}</h3>
                       <p className="text-textMain/50 text-sm font-medium line-clamp-2 mb-6">{event.desc}</p>
-                      <button 
-                        onClick={() => deleteEvent(event._id)}
-                        className="w-full py-4 bg-red-50 text-red-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        <Trash2 size={18} /> DELETE EVENT
-                      </button>
+                      <div className="flex gap-4">
+                        <button 
+                          onClick={() => openEditEventForm(event)}
+                          className="flex-1 py-4 bg-primary/10 text-primary rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all"
+                        >
+                          <Edit size={18} /> EDIT EVENT
+                        </button>
+                        <button 
+                          onClick={() => deleteEvent(event._id)}
+                          className="flex-1 py-4 bg-red-50 text-red-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          <Trash2 size={18} /> DELETE
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -735,7 +765,9 @@ const AdminDashboard = ({ admin, onLogout }) => {
               className="bg-surface w-full max-w-2xl p-12 rounded-[60px] border-8 border-bg transition-colors duration-500"
             >
               <div className="flex justify-between items-center mb-10">
-                <h2 className="text-5xl font-retro text-textMain uppercase tracking-tighter">New Event</h2>
+                <h2 className="text-5xl font-retro text-textMain uppercase tracking-tighter">
+                  {editingEventId ? 'Edit Event' : 'New Event'}
+                </h2>
                 <button onClick={() => setShowEventForm(false)} className="text-textMain/30 hover:text-primary transition-colors"><XCircle size={32} /></button>
               </div>
 
@@ -758,7 +790,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
                 </div>
 
                 <button className="w-full py-5 bg-primary text-white font-retro text-2xl rounded-pill shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
-                  PUBLISH EVENT
+                  {editingEventId ? 'UPDATE EVENT' : 'PUBLISH EVENT'}
                 </button>
               </form>
             </motion.div>
