@@ -7,7 +7,11 @@ const bcrypt = require('bcryptjs');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
-dotenv.config();
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,14 +35,33 @@ const adminSchema = new mongoose.Schema({
 
 const Admin = mongoose.model('Admin', adminSchema);
 
+const addressSchema = new mongoose.Schema({
+  label: { type: String, default: 'Home' },
+  line1: { type: String, required: true },
+  city: { type: String, required: true },
+  pincode: { type: String, required: true },
+});
+
 // User Schema
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  phone: { type: String }
+  phone: { type: String },
+  addresses: [addressSchema]
 });
 const User = mongoose.model('User', userSchema);
+
+// Review Schema
+const reviewSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userName: { type: String, required: true },
+  menuItemId: { type: String, required: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  comment: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+const Review = mongoose.model('Review', reviewSchema);
 
 // Customer Auth Middleware
 const customerAuth = (req, res, next) => {
@@ -115,6 +138,102 @@ app.get('/api/users/me', customerAuth, async (req, res) => {
   }
 });
 
+// Update User Profile (Name, Phone)
+app.patch('/api/users/profile', customerAuth, async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, phone },
+      { new: true }
+    ).select('-password');
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Add Address
+app.post('/api/users/addresses', customerAuth, async (req, res) => {
+  try {
+    const { label, line1, city, pincode } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $push: { addresses: { label, line1, city, pincode } } },
+      { new: true }
+    ).select('-password');
+    res.json({ success: true, addresses: user.addresses });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Delete Address
+app.delete('/api/users/addresses/:addressId', customerAuth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $pull: { addresses: { _id: req.params.addressId } } },
+      { new: true }
+    ).select('-password');
+    res.json({ success: true, addresses: user.addresses });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Submit Review
+app.post('/api/reviews', customerAuth, async (req, res) => {
+  try {
+    const { menuItemId, rating, comment } = req.body;
+    const user = await User.findById(req.user.id).select('name');
+    // Allow only one review per user per item
+    const existing = await Review.findOne({ userId: req.user.id, menuItemId });
+    if (existing) {
+      existing.rating = rating;
+      existing.comment = comment;
+      await existing.save();
+      return res.json({ success: true, review: existing });
+    }
+    const review = new Review({ userId: req.user.id, userName: user.name, menuItemId, rating, comment });
+    await review.save();
+    res.status(201).json({ success: true, review });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get Reviews for a Menu Item
+app.get('/api/reviews/:menuItemId', async (req, res) => {
+  try {
+    const reviews = await Review.find({ menuItemId: req.params.menuItemId }).sort({ createdAt: -1 });
+    const avg = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) : 0;
+    res.json({ reviews, avg: Math.round(avg * 10) / 10, count: reviews.length });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get Average Ratings for ALL Menu Items (for Menu page)
+app.get('/api/reviews', async (req, res) => {
+  try {
+    const allReviews = await Review.find();
+    const ratings = {};
+    allReviews.forEach(r => {
+      if (!ratings[r.menuItemId]) ratings[r.menuItemId] = { sum: 0, count: 0 };
+      ratings[r.menuItemId].sum += r.rating;
+      ratings[r.menuItemId].count += 1;
+    });
+    const result = {};
+    Object.entries(ratings).forEach(([id, { sum, count }]) => {
+      result[id] = { avg: Math.round((sum / count) * 10) / 10, count };
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Admin Login
 app.post('/api/admin/login', async (req, res) => {
   const { username, password } = req.body;
@@ -156,6 +275,7 @@ const reservationSchema = new mongoose.Schema({
   date: { type: String, required: true },
   time: { type: String, required: true },
   guests: { type: String, required: true },
+  table: { type: Object },
   requests: { type: String },
   status: { type: String, default: 'pending' },
   createdAt: { type: Date, default: Date.now }

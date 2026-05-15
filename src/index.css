@@ -51,9 +51,9 @@ body::before {
 }
 
 .dark body::before {
-  filter: invert(1) contrast(1.2) brightness(0.8);
+  filter: invert(1) contrast(1.2) brightness(0.5);
   mix-blend-mode: screen;
-  opacity: 0.15;
+  opacity: 0.06;
 }
 
 h1, h2, h3 {

@@ -19,6 +19,9 @@ const Hero = () => {
   return (
     <section ref={ref} id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-bg transition-colors duration-500">
       
+      {/* Dark Mode Glow Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,124,93,0.08)_0%,transparent_60%)] opacity-0 dark:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      
       {/* Left Floating Bowl - Perfect Circle Crop & Exact Sizing */}
       <motion.div
         style={{ y: yLeftBowl, opacity }}
@@ -32,7 +35,7 @@ const Hero = () => {
             x: { duration: 1, delay: 0.5 },
             y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
           }}
-          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white"
+          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_100px_rgba(239,124,93,0.3)] border-0 flex items-center justify-center bg-white transition-shadow duration-700"
         >
           <img
             src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=90&w=600"
@@ -55,7 +58,7 @@ const Hero = () => {
             x: { duration: 1, delay: 0.7 },
             y: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }
           }}
-          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white"
+          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_100px_rgba(239,124,93,0.3)] border-0 flex items-center justify-center bg-white transition-shadow duration-700"
         >
           <img
             src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=90&w=600"
@@ -73,7 +76,7 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="mb-2"
         >
-          <h1 className="text-[25vw] md:text-[280px] leading-[0.75] text-textMain font-retro uppercase tracking-[-0.04em]">
+          <h1 className="text-[25vw] md:text-[280px] leading-[0.75] text-textMain font-retro uppercase tracking-[-0.04em] drop-shadow-sm dark:drop-shadow-[0_0_30px_rgba(245,230,211,0.15)] transition-all duration-700">
             RASTURA
           </h1>
         </motion.div>

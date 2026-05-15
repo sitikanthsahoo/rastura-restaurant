@@ -160,7 +160,7 @@ const Cart = ({ cart, onRemove, onAdd, onMinus, onClose }) => {
                   <div className="text-center text-textMain/50 mt-20 font-bold">Your cart is empty.</div>
                 ) : (
                   cart.map(item => (
-                    <div key={item._id || item.id} className="flex gap-4 items-center bg-white p-4 rounded-3xl shadow-sm border border-textMain/5">
+                    <div key={item._id || item.id} className="flex gap-4 items-center bg-surface p-4 rounded-3xl shadow-sm border border-textMain/5">
                       <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
                         <img src={item.image || item.img} alt={item.name} className="w-full h-full object-cover" />
                       </div>
@@ -168,7 +168,7 @@ const Cart = ({ cart, onRemove, onAdd, onMinus, onClose }) => {
                         <h3 className="font-bold text-textMain leading-tight">{item.name}</h3>
                         <div className="text-primary font-bold mt-1">₹{item.price}</div>
                         <div className="flex items-center gap-3 mt-3">
-                          <button onClick={() => onMinus(item)} className="w-8 h-8 rounded-full bg-textMain/5 flex items-center justify-center hover:bg-textMain/10 text-textMain transition-colors">
+                          <button onClick={() => onMinus(item._id || item.id)} className="w-8 h-8 rounded-full bg-textMain/5 flex items-center justify-center hover:bg-textMain/10 text-textMain transition-colors">
                             <Minus size={14} />
                           </button>
                           <span className="font-bold w-4 text-center">{item.qty}</span>
@@ -177,7 +177,7 @@ const Cart = ({ cart, onRemove, onAdd, onMinus, onClose }) => {
                           </button>
                         </div>
                       </div>
-                      <button onClick={() => onRemove(item)} className="p-3 text-red-400 hover:bg-red-50 hover:text-red-500 rounded-full transition-colors self-start">
+                      <button onClick={() => onRemove(item._id || item.id)} className="p-3 text-red-400 hover:bg-red-50 hover:text-red-500 rounded-full transition-colors self-start">
                         <Trash2 size={20} />
                       </button>
                     </div>
@@ -186,7 +186,7 @@ const Cart = ({ cart, onRemove, onAdd, onMinus, onClose }) => {
               </div>
 
               {cart.length > 0 && (
-                <div className="p-6 bg-white border-t border-textMain/10 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-10">
+                <div className="p-6 bg-surface border-t border-textMain/10 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-10">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-textMain/60 font-bold">Total Amount</span>
                     <span className="font-retro text-3xl text-textMain">₹{total.toLocaleString()}</span>

@@ -16,15 +16,15 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <nav className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">
-      {/* EXACT MATCH: Soft peach background, consistent with reference */}
-      <div className="w-full max-w-7xl flex justify-between items-center bg-[#F4CDC3] backdrop-blur-md rounded-full px-8 py-3 shadow-xl transition-all duration-500">
+      {/* Theme-aware background */}
+      <div className="w-full max-w-7xl flex justify-between items-center bg-accent backdrop-blur-md rounded-full px-8 py-3 shadow-xl transition-all duration-500 border border-textMain/5">
         
         {/* Logo */}
         <a href="#home" className="flex items-center gap-3 group">
-          <div className="text-[#EF7C5D]">
+          <div className="text-primary">
             <Soup size={32} strokeWidth={2.5} />
           </div>
-          <span className="text-2xl font-retro text-[#1A1A1A] tracking-tighter">
+          <span className="text-2xl font-retro text-textMain tracking-tighter">
             RASTURA
           </span>
         </a>
@@ -35,7 +35,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-bold text-[#1A1A1A] hover:text-[#EF7C5D] transition-colors tracking-widest font-sans"
+              className="text-sm font-bold text-textMain hover:text-primary transition-colors tracking-widest font-sans"
             >
               {link.name}
             </a>
@@ -47,7 +47,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           {/* Theme Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-full bg-black/5 text-[#1A1A1A] hover:text-[#EF7C5D] transition-all"
+            className="p-2 rounded-full bg-textMain/5 text-textMain hover:text-primary transition-all"
             aria-label="Toggle theme"
           >
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
@@ -55,7 +55,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           
           <button
             onClick={() => navigate('/profile')}
-            className="p-2 rounded-full bg-black/5 text-[#1A1A1A] hover:text-[#EF7C5D] transition-all"
+            className="p-2 rounded-full bg-textMain/5 text-textMain hover:text-primary transition-all"
             aria-label="Profile"
           >
             <User size={20} />
@@ -72,7 +72,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               {/* The White Ring from reference */}
               <span className="absolute inset-0 w-full h-full bg-white rounded-full"></span>
               {/* The Main Button */}
-              <span className="relative flex items-center gap-2 px-8 py-3 bg-[#EF7C5D] text-white rounded-full font-sans text-xs font-black tracking-widest transition-all">
+              <span className="relative flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-full font-sans text-xs font-black tracking-widest transition-all">
                 BOOK A RESERVATION <ArrowRight size={18} strokeWidth={3} />
               </span>
             </motion.a>
@@ -80,7 +80,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
           {/* Mobile Toggle */}
           <button
-            className="md:hidden text-[#EF7C5D]"
+            className="md:hidden text-primary"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -95,7 +95,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 left-4 right-4 bg-[#F4CDC3] p-8 rounded-[40px] md:hidden shadow-2xl"
+            className="absolute top-24 left-4 right-4 bg-accent p-8 rounded-[40px] md:hidden shadow-2xl border border-textMain/10"
           >
             <div className="flex flex-col space-y-6">
               {navLinks.map((link) => (
@@ -103,7 +103,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-xl font-bold text-[#1A1A1A] hover:text-[#EF7C5D] transition-colors text-center font-sans tracking-widest"
+                  className="text-xl font-bold text-textMain hover:text-primary transition-colors text-center font-sans tracking-widest"
                 >
                   {link.name}
                 </a>
@@ -111,7 +111,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               <a
                 href="#reservations"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 py-4 bg-[#EF7C5D] text-white rounded-full font-sans font-black text-sm tracking-widest uppercase"
+                className="flex items-center justify-center gap-2 py-4 bg-primary text-white rounded-full font-sans font-black text-sm tracking-widest uppercase"
               >
                 BOOK A RESERVATION <ArrowRight size={20} />
               </a>
