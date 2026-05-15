@@ -9,6 +9,7 @@ import {
   QrCode, Download, Edit
 } from 'lucide-react';
 import { menuCategories } from '../data/menuData';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const AdminDashboard = ({ admin, onLogout }) => {
   const [reservations, setReservations] = useState([]);
@@ -407,7 +408,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
                     className="bg-surface rounded-[40px] overflow-hidden border-4 border-bg group relative transition-all duration-500"
                   >
                     <div className="h-48 relative">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-all duration-500" />
                       <div className="absolute top-4 right-4 bg-primary text-white px-4 py-1 rounded-full font-retro text-lg">
                         ${item.price}
                       </div>
@@ -454,28 +455,29 @@ const AdminDashboard = ({ admin, onLogout }) => {
 
                 // Donut chart segments
                 const donutData = [
-                  { label: 'Confirmed', value: confirmed, color: '#16a34a' },
-                  { label: 'Pending', value: pending, color: '#f59e0b' },
-                  { label: 'Cancelled', value: cancelled, color: '#ef4444' },
+                  { name: 'Confirmed', value: confirmed, color: '#16a34a' },
+                  { name: 'Pending', value: pending, color: '#f59e0b' },
+                  { name: 'Cancelled', value: cancelled, color: '#ef4444' },
                 ];
-                const donutTotal = donutData.reduce((a, d) => a + d.value, 0) || 1;
-                let cumulative = 0;
-                const donutSegments = donutData.map(d => {
-                  const start = (cumulative / donutTotal) * 360;
-                  cumulative += d.value;
-                  const end = (cumulative / donutTotal) * 360;
-                  return { ...d, start, end };
-                });
 
-                const describeArc = (cx, cy, r, startAngle, endAngle) => {
-                  const toRad = a => (a - 90) * Math.PI / 180;
-                  const x1 = cx + r * Math.cos(toRad(startAngle));
-                  const y1 = cy + r * Math.sin(toRad(startAngle));
-                  const x2 = cx + r * Math.cos(toRad(endAngle));
-                  const y2 = cy + r * Math.sin(toRad(endAngle));
-                  const large = endAngle - startAngle > 180 ? 1 : 0;
-                  return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
-                };
+                const revenueData = [
+                  { name: 'Mon', revenue: 1200 },
+                  { name: 'Tue', revenue: 1500 },
+                  { name: 'Wed', revenue: 1800 },
+                  { name: 'Thu', revenue: 2100 },
+                  { name: 'Fri', revenue: 3200 },
+                  { name: 'Sat', revenue: 4500 },
+                  { name: 'Sun', revenue: 3800 },
+                ];
+
+                const peakTimes = [
+                  { time: '17:00', guests: 12 },
+                  { time: '18:00', guests: 25 },
+                  { time: '19:00', guests: 45 },
+                  { time: '20:00', guests: 55 },
+                  { time: '21:00', guests: 30 },
+                  { time: '22:00', guests: 15 },
+                ];
 
                 return (
                   <div className="space-y-8">
@@ -503,38 +505,94 @@ const AdminDashboard = ({ admin, onLogout }) => {
                       ))}
                     </div>
 
+                    {/* Charts Row 1 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Donut Chart */}
+                      {/* Revenue Chart */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="bg-surface rounded-[35px] p-10 border-4 border-bg shadow-xl"
+                        className="bg-surface rounded-[35px] p-10 border-4 border-bg shadow-xl flex flex-col"
+                      >
+                        <div className="flex items-center gap-3 mb-8">
+                          <DollarSign size={22} className="text-primary" />
+                          <h3 className="text-2xl font-retro text-textMain uppercase">Weekly Revenue</h3>
+                        </div>
+                        <div className="flex-1 min-h-[250px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={revenueData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+                              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
+                              <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dx={-10} />
+                              <Tooltip cursor={{fill: 'rgba(239, 124, 93, 0.05)'}} contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)'}} />
+                              <Bar dataKey="revenue" fill="#EF7C5D" radius={[6, 6, 0, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </motion.div>
+
+                      {/* Peak Times Chart */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                        className="bg-surface rounded-[35px] p-10 border-4 border-bg shadow-xl flex flex-col"
                       >
                         <div className="flex items-center gap-3 mb-8">
                           <TrendingUp size={22} className="text-primary" />
+                          <h3 className="text-2xl font-retro text-textMain uppercase">Peak Reservation Times</h3>
+                        </div>
+                        <div className="flex-1 min-h-[250px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={peakTimes}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+                              <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
+                              <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dx={-10} />
+                              <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)'}} />
+                              <Line type="monotone" dataKey="guests" stroke="#8b5cf6" strokeWidth={4} dot={{r: 6, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff'}} activeDot={{r: 8}} />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Charts Row 2 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Donut Chart */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                        className="bg-surface rounded-[35px] p-10 border-4 border-bg shadow-xl flex flex-col"
+                      >
+                        <div className="flex items-center gap-3 mb-8">
+                          <ClipboardList size={22} className="text-primary" />
                           <h3 className="text-2xl font-retro text-textMain uppercase">Reservation Status</h3>
                         </div>
-                        <div className="flex items-center justify-center gap-10">
-                          <svg width="180" height="180" viewBox="0 0 100 100">
-                            {donutTotal === 0 ? (
-                              <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" strokeWidth="20" />
-                            ) : donutSegments.map((seg, i) =>
-                              seg.value > 0 ? (
-                                <path
-                                  key={i}
-                                  d={describeArc(50, 50, 38, seg.start, seg.end)}
-                                  fill={seg.color}
-                                  opacity={0.9}
-                                />
-                              ) : null
-                            )}
-                            <circle cx="50" cy="50" r="24" fill="var(--color-surface, white)" />
-                            <text x="50" y="54" textAnchor="middle" fontSize="14" fontWeight="bold" fill="currentColor">{total}</text>
-                          </svg>
+                        <div className="flex items-center justify-between flex-1">
+                          <div className="w-[200px] h-[200px] relative">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie
+                                  data={donutData}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={60}
+                                  outerRadius={80}
+                                  paddingAngle={5}
+                                  dataKey="value"
+                                  stroke="none"
+                                >
+                                  {donutData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                  ))}
+                                </Pie>
+                                <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)'}} />
+                              </PieChart>
+                            </ResponsiveContainer>
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <span className="font-retro text-textMain text-4xl">{total}</span>
+                            </div>
+                          </div>
                           <div className="space-y-4">
                             {donutData.map(d => (
-                              <div key={d.label} className="flex items-center gap-3">
+                              <div key={d.name} className="flex items-center gap-3">
                                 <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ background: d.color }} />
-                                <span className="font-bold text-textMain/60 text-sm uppercase tracking-widest">{d.label}</span>
+                                <span className="font-bold text-textMain/60 text-sm uppercase tracking-widest">{d.name}</span>
                                 <span className="font-retro text-textMain text-2xl ml-auto pl-4">{d.value}</span>
                               </div>
                             ))}
@@ -544,7 +602,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
 
                       {/* Menu Category Breakdown */}
                       <motion.div
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
                         className="bg-surface rounded-[35px] p-10 border-4 border-bg shadow-xl"
                       >
                         <div className="flex items-center gap-3 mb-8">
@@ -635,7 +693,7 @@ const AdminDashboard = ({ admin, onLogout }) => {
                     className="bg-surface rounded-[40px] overflow-hidden border-4 border-bg group relative transition-all duration-500"
                   >
                     <div className="h-48 relative">
-                      <img src={event.image} alt={event.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                      <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-all duration-500" />
                       <div className="absolute top-4 right-4 bg-primary text-white px-4 py-1 rounded-full font-retro text-lg">
                         {event.date}
                       </div>

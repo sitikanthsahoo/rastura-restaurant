@@ -15,6 +15,55 @@ const spiceMap = {
   'Kulfi Falooda': 0, 'Mango Lassi': 0, 'Masala Chai': 1, 'Rose Sharbat': 0,
 };
 
+const AddButton = ({ item, cartItem, onAddToCart }) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const qty = cartItem ? cartItem.qty : 0;
+
+  const handleClick = (e) => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 500);
+    if (onAddToCart) onAddToCart(item);
+  };
+
+  return (
+    <div className="relative">
+      <AnimatePresence>
+        {isAnimating && (
+          <motion.div
+            initial={{ scale: 1, opacity: 0.8 }}
+            animate={{ scale: 2.5, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="absolute inset-0 bg-[#EF7C5D] rounded-full z-0 pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.8 }}
+        onClick={handleClick}
+        className="relative w-14 h-14 bg-surface rounded-full flex items-center justify-center text-[#EF7C5D] shadow-lg transition-colors hover:bg-primary hover:text-white z-10 border-2 border-transparent"
+      >
+        <span className="text-3xl font-bold leading-none mb-1">+</span>
+        <AnimatePresence>
+          {qty > 0 && (
+            <motion.span
+              key={qty}
+              initial={{ scale: 0, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-textMain text-surface rounded-full text-xs font-bold flex items-center justify-center border-2 border-surface shadow-md"
+            >
+              {qty}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </div>
+  );
+};
+
 const Menu = ({ onAddToCart, cart = [] }) => {
   const [activeTab, setActiveTab] = useState("Starters");
   const [menuItems, setMenuItems] = useState([]);
@@ -128,10 +177,17 @@ const Menu = ({ onAddToCart, cart = [] }) => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
                 whileHover={{ y: -10 }}
-                className="bg-bg p-10 rounded-[45px] shadow-xl shadow-primary/5 group relative transition-all duration-500"
+                className="bg-bg rounded-[45px] shadow-xl shadow-primary/5 group relative transition-all duration-500 overflow-hidden flex flex-col"
               >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
+                {item.image && (
+                  <div className="h-56 w-full relative flex-shrink-0">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </div>
+                )}
+                
+                <div className="p-8 pb-10 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
                     {/* Indian Veg / Non-Veg indicator */}
                     <div className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center flex-shrink-0 ${item.isVeg ? 'border-green-600' : 'border-red-500'}`}>
                       <div className={`w-2.5 h-2.5 rounded-full ${item.isVeg ? 'bg-green-600' : 'bg-red-500'}`} />
@@ -172,25 +228,10 @@ const Menu = ({ onAddToCart, cart = [] }) => {
                     const cartItem = cart.find(c => (c._id || c.id) === (item._id || item.id));
                     const qty = cartItem ? cartItem.qty : 0;
                     return (
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        onClick={() => onAddToCart && onAddToCart(item)}
-                        className="relative w-14 h-14 bg-surface rounded-full flex items-center justify-center text-[#EF7C5D] shadow-lg hover:scale-110 active:scale-95 transition-all hover:bg-primary hover:text-white"
-                      >
-                        <span className="text-3xl font-bold leading-none">+</span>
-                        {qty > 0 && (
-                          <motion.span
-                            key={qty}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute -top-2 -right-2 w-6 h-6 bg-primary text-white rounded-full text-xs font-bold flex items-center justify-center"
-                          >
-                            {qty}
-                          </motion.span>
-                        )}
-                      </motion.button>
+                      <AddButton item={item} cartItem={cartItem} onAddToCart={onAddToCart} />
                     );
                   })()}
+                </div>
                 </div>
               </motion.div>
             ))}

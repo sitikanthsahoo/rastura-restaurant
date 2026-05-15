@@ -1,59 +1,71 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Phone, Star } from 'lucide-react';
+import { useRef } from 'react';
 
 const Hero = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  const yLeftBowl = useTransform(smoothProgress, [0, 1], [0, 200]);
+  const yRightBowl = useTransform(smoothProgress, [0, 1], [0, -200]);
+  const yText = useTransform(smoothProgress, [0, 1], [0, 100]);
+  const opacity = useTransform(smoothProgress, [0, 0.8], [1, 0]);
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-bg transition-colors duration-500">
+    <section ref={ref} id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-bg transition-colors duration-500">
       
       {/* Left Floating Bowl - Perfect Circle Crop & Exact Sizing */}
       <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ 
-          x: 0, 
-          opacity: 1,
-          y: [0, -40, 0] 
-        }}
-        transition={{ 
-          opacity: { duration: 1, delay: 0.5 },
-          x: { duration: 1, delay: 0.5 },
-          y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
-        }}
+        style={{ y: yLeftBowl, opacity }}
         className="absolute left-4 md:left-20 top-[40%] md:top-1/2 -translate-y-1/2 z-20"
       >
-        <div className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white">
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1, y: [0, -40, 0] }}
+          transition={{ 
+            opacity: { duration: 1, delay: 0.5 },
+            x: { duration: 1, delay: 0.5 },
+            y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white"
+        >
           <img
             src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=90&w=600"
             alt="Salad Bowl"
             className="w-[110%] h-[110%] object-cover"
           />
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* Right Floating Bowl - Perfect Circle Crop & Exact Sizing */}
       <motion.div
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ 
-          x: 0, 
-          opacity: 1,
-          y: [0, 40, 0] 
-        }}
-        transition={{ 
-          opacity: { duration: 1, delay: 0.7 },
-          x: { duration: 1, delay: 0.7 },
-          y: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }
-        }}
+        style={{ y: yRightBowl, opacity }}
         className="absolute right-4 md:right-20 top-[40%] md:top-1/2 -translate-y-1/2 z-20"
       >
-        <div className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white">
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1, y: [0, 40, 0] }}
+          transition={{ 
+            opacity: { duration: 1, delay: 0.7 },
+            x: { duration: 1, delay: 0.7 },
+            y: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }
+          }}
+          className="w-32 h-32 md:w-[280px] md:h-[280px] rounded-full overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.2)] border-0 flex items-center justify-center bg-white"
+        >
           <img
             src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=90&w=600"
             alt="Soup Bowl"
             className="w-[110%] h-[110%] object-cover"
           />
-        </div>
+        </motion.div>
       </motion.div>
 
-      <div className="container mx-auto px-6 relative z-10 text-center">
+      <motion.div style={{ y: yText, opacity }} className="container mx-auto px-6 relative z-10 text-center">
         {/* Main Headline - EXACT MATCH: Solid Black, Proper Size, Spacing */}
         <motion.div
           initial={{ y: 50, opacity: 0 }}
@@ -111,7 +123,7 @@ const Hero = () => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Subtle Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[#EF7C5D]/5 rounded-full blur-[150px] -z-10" />

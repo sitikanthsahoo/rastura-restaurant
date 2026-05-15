@@ -5,9 +5,9 @@ import FadeUp from './FadeUp';
 
 const galleryImages = [
   { id: 1, span: 'md:col-span-2 md:row-span-2', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=800' },
-  { id: 2, span: 'md:col-span-1 md:row-span-1', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=800' },
+  { id: 2, span: 'md:col-span-1 md:row-span-1', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800' },
   { id: 3, span: 'md:col-span-1 md:row-span-2', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800' },
-  { id: 4, span: 'md:col-span-1 md:row-span-1', img: 'https://images.unsplash.com/photo-1550966842-28a2a24b6f70?auto=format&fit=crop&q=80&w=800' },
+  { id: 4, span: 'md:col-span-1 md:row-span-1', img: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=800' },
   { id: 5, span: 'md:col-span-1 md:row-span-1', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800' },
   { id: 6, span: 'md:col-span-2 md:row-span-1', img: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&q=80&w=800' },
 ];
@@ -37,7 +37,7 @@ const Gallery = () => {
               <img
                 src={item.img}
                 alt="Gallery"
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full object-cover transition-all duration-700"
               />
               <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <div className="bg-surface p-4 rounded-full text-primary shadow-xl scale-0 group-hover:scale-100 transition-transform duration-500">

@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
 dotenv.config();
 
@@ -14,6 +16,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'rastura_secret_key_123';
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Razorpay Initialization
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || 'dummy_id',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'dummy_secret',
+});
 
 // Admin Schema
 const adminSchema = new mongoose.Schema({
@@ -181,7 +189,43 @@ const Event = mongoose.model('Event', eventSchema);
 
 // --- PUBLIC ROUTES ---
 
-// POST: Create Reservation (Public/Customer)
+// --- PAYMENT ROUTES ---
+app.post('/api/payment/create-order', async (req, res) => {
+  try {
+    const { amount } = req.body; // Amount in INR
+    const options = {
+      amount: amount * 100, // amount in smallest currency unit (paise)
+      currency: "INR",
+      receipt: "receipt_order_" + Date.now(),
+    };
+    const order = await razorpay.orders.create(options);
+    res.json({ success: true, order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/payment/verify', async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || 'dummy_secret')
+      .update(sign.toString())
+      .digest("hex");
+
+    if (razorpay_signature === expectedSign) {
+      res.json({ success: true, message: "Payment verified successfully" });
+    } else {
+      res.status(400).json({ success: false, message: "Invalid signature sent!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET: All Menu Items (Public)
 app.post('/api/reservations', async (req, res) => {
   try {
     const reservationData = { ...req.body };
